@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+
+    <ProgressBar
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/progressBar"
+        android:indeterminate="true" />
+
+    // PREVIEW
+    <ImageView
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:scaleType="centerInside"
+        android:id="@+id/asyncPreviewIV" />
+
+    // TITLE
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_toRightOf="@+id/asyncPreviewIV"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_toLeftOf="@+id/ic_arrow"
+        android:layout_toEndOf="@+id/asyncPreviewIV"
+        android:id="@+id/titleTV" />
+    // AUTHOR
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text=""
+        android:id="@+id/authorTV"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/asyncPreviewIV"
+        android:layout_toEndOf="@+id/asyncPreviewIV" />
+    // DATE
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_marginLeft="30dp"
+        android:id="@+id/dateTV"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/authorTV" />
+
+    // COMMENTS
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/commentsTV"
+        android:layout_alignTop="@+id/commentIcon"
+        android:layout_toRightOf="@+id/commentIcon"
+        android:layout_toEndOf="@+id/commentIcon" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/commentText"
+        android:text="comentarios"
+        android:layout_marginLeft="4dp"
+        android:textSize="16sp"
+        android:layout_toRightOf="@+id/commentsTV"
+        android:layout_alignBottom="@+id/commentIcon"
+        android:layout_centerHorizontal="true" />
+
+
+    // COMMENT ICON
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_comment"
+        android:id="@+id/commentIcon"
+        android:layout_below="@+id/titleTV"
+        android:layout_toRightOf="@+id/asyncPreviewIV"
+        android:layout_toEndOf="@+id/asyncPreviewIV" />
+    // ARROW
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_action_arrow"
+        android:id="@+id/ic_arrow"
+        android:layout_marginBottom="11dp"
+        android:layout_alignBottom="@+id/titleTV"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>

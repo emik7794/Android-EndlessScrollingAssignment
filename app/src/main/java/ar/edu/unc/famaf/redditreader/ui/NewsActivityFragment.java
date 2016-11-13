@@ -32,15 +32,17 @@ public class NewsActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         final View view = inflater.inflate(R.layout.fragment_news, container, false);
-        final ListView postsLV = (ListView) view.findViewById(R.id.postsLV);
+        ListView postsLV = (ListView) view.findViewById(R.id.postsLV);
+
+        final PostAdapter adapter = new PostAdapter(getContext(), R.layout.post_row, postModelList);
+        postsLV.setAdapter(adapter);
 
         final PostsIteratorListener listener = new PostsIteratorListener() {
+
             @Override
             public void nextPosts(List<PostModel> posts) {
                 postModelList.addAll(posts);
-                PostAdapter adapter = new PostAdapter(getContext(), R.layout.post_row, postModelList);
                 adapter.notifyDataSetChanged();
-                postsLV.setAdapter(adapter);
             }
         };
 

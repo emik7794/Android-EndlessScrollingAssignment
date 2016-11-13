@@ -106,7 +106,7 @@ public class PostAdapter extends ArrayAdapter<PostModel> {
         viewHolder.dateTV.setText(pm.getDate());
 
 
-        String urlPreviewImage = pm.getUrlString();
+        final String urlPreviewImage = pm.getUrlString();
         Bitmap bitmapPreviewImage = new PreviewImageDBHelper(getContext()).getImage(urlPreviewImage);
 
         if(bitmapPreviewImage == null) { // Si la imagen no esta en la db la descargo.
@@ -125,6 +125,7 @@ public class PostAdapter extends ArrayAdapter<PostModel> {
                         viewHolder.progressBar.setVisibility(ProgressBar.GONE);
                         if (bitmap != null) {
                             viewHolder.asyncPreviewIV.setImageBitmap(bitmap);
+                            new PreviewImageDBHelper(getContext()).setImage(bitmap, urlPreviewImage);
                         } else {
                             viewHolder.asyncPreviewIV.setImageResource(R.drawable.reddit_icon);
                         }

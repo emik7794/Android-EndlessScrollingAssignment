@@ -1,11 +1,16 @@
 package ar.edu.unc.famaf.redditreader.backend;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import ar.edu.unc.famaf.redditreader.model.PostModel;
+
 
 public class Backend {
     private static Backend ourInstance = new Backend();
@@ -17,50 +22,50 @@ public class Backend {
     private Backend() {
     }
 
-    public List<PostModel> getTopPosts() {
-        List<PostModel> postModelsList = new ArrayList<>();
+    public void getNextPosts(final PostsIteratorListener listener, final Context context) {
 
-        PostModel postModel1 = new PostModel();
-        postModel1.setTitle("Este es el titulo numero 1");
-        postModel1.setAuthor("r/author1");
-        postModel1.setDate("Hace 1 hora");
-        postModel1.setComments(10);
-        postModel1.setUrlString("https://yt3.ggpht.com/-v0soe-ievYE/AAAAAAAAAAI/AAAAAAAAAAA/OixOH_h84Po/s900-c-k-no-mo-rj-c0xffffff/photo.jpg");
+        RedditDBHelper dbReddit = new RedditDBHelper(context);
+        SQLiteDatabase db = dbReddit.getWritableDatabase();
 
-        PostModel postModel2 = new PostModel();
-        postModel2.setTitle("Este es el titulo numero 2");
-        postModel2.setAuthor("r/author2");
-        postModel2.setDate("Hace 2 horas");
-        postModel2.setComments(20);
-        postModel2.setUrlString("http://www.hotel-r.net/im/hotel/fr/casa-2.png");
+        if (isNetworkAvailable(context)) {
+            RedditDBHelper[] dbRedditArray = new RedditDBHelper[1];
+            dbRedditArray[0] = dbReddit;
+            new GetTopPostsTask() {
+                @Override
+                protected void onPostExecute(List<PostModel> postModels) {
+                    super.onPostExecute(postModels);
+                }
+            }.execute(dbRedditArray);
+        }
 
-        PostModel postModel3 = new PostModel();
-        postModel3.setTitle("Este es el titulo numero 3");
-        postModel3.setAuthor("r/author3");
-        postModel3.setDate("Hace 3 horas");
-        postModel3.setComments(30);
-        postModel3.setUrlString("http://www.mundoperro.net/wp-content/uploads/consejos-perro-feliz-verano-400x300.jpg");
+        List<PostModel> postModelList = new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + dbReddit.POST_TABLE, null);
 
-        PostModel postModel4 = new PostModel();
-        postModel4.setTitle("Este es el titulo numero 4");
-        postModel4.setAuthor("r/author4");
-        postModel4.setDate("Hace 4 horas");
-        postModel4.setComments(40);
-        postModel4.setUrlString("http://fm.cnbc.com/applications/cnbc.com/resources/img/editorial/2016/03/01/103432838-03_CHIRON_34-front_WEB.530x298.jpg?v=1456848597");
+        if (cursor.moveToFirst()) {
+            do {
+                PostModel postModel = new PostModel();
+                postModel.setTitle(cursor.getString(1));
+                postModel.setAuthor(cursor.getString(2));
+                postModel.setDate(cursor.getString(3));
+                postModel.setComments(cursor.getLong(4));
+                postModel.setUrlString(cursor.getString(5));
+                postModelList.add(postModel);
 
-        PostModel postModel5 = new PostModel();
-        postModel5.setTitle("Este es el titulo numero 5");
-        postModel5.setAuthor("r/author5");
-        postModel5.setDate("Hace 5 horas");
-        postModel5.setComments(50);
-        postModel5.setUrlString("http://misanimales.com/wp-content/uploads/2015/02/gato-2.jpg");
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        dbReddit.close();
 
-        postModelsList.add(postModel1);
-        postModelsList.add(postModel2);
-        postModelsList.add(postModel3);
-        postModelsList.add(postModel4);
-        postModelsList.add(postModel5);
+        listener.nextPosts(postModelList);
 
-        return postModelsList;
     }
+
+
+    private boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
 }

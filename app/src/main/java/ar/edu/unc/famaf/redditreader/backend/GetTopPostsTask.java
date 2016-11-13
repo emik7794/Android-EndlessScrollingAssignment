@@ -42,6 +42,7 @@ public class GetTopPostsTask extends AsyncTask<RedditDBHelper, Void, List<PostMo
                     long insertId = db.insert(dbreddit.POST_TABLE, null, values);
 
                 }
+                dbreddit.close();
 
                 return listing.getChildren();
 

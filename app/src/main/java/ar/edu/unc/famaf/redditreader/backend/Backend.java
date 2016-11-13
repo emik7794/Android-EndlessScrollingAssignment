@@ -22,12 +22,14 @@ public class Backend {
     private Backend() {
     }
 
-    public void getNextPosts(final PostsIteratorListener listener, final Context context) {
+    private int offset = 0; // lo utilizo para la consulta a la db como argumento del LIMIT.
+
+    public void getNextPosts(final PostsIteratorListener listener, final Context context, boolean savePosts) {
 
         RedditDBHelper dbReddit = new RedditDBHelper(context);
-        SQLiteDatabase db = dbReddit.getWritableDatabase();
 
-        if (isNetworkAvailable(context)) {
+        // savePosts lo uso como flag para determinar que traiga los post y los persista una sola vez
+        if (isNetworkAvailable(context) && savePosts) {
             RedditDBHelper[] dbRedditArray = new RedditDBHelper[1];
             dbRedditArray[0] = dbReddit;
             new GetTopPostsTask() {
@@ -38,8 +40,15 @@ public class Backend {
             }.execute(dbRedditArray);
         }
 
+
+        SQLiteDatabase db = dbReddit.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + dbReddit.POST_TABLE
+                + " LIMIT " + String.valueOf(offset) + "," + "5", null);
+
+        offset = offset + 5;
+
         List<PostModel> postModelList = new ArrayList<>();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + dbReddit.POST_TABLE, null);
 
         if (cursor.moveToFirst()) {
             do {
